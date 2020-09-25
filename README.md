@@ -11,6 +11,9 @@
   </a>
 </p>
 
+
+
+
 # Tellor Miner
 
 This is the workhorse of the Miner system as it takes on solving the PoW challenge.
