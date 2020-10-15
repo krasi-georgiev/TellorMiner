@@ -3,8 +3,6 @@ on:
   push:
     branches:
       - master
-    tags:
-      - v*
   pull_request:
 jobs:
   Linting:
@@ -69,3 +67,46 @@ jobs:
         with:
             github-token: ${{ secrets.github_token }}
             path-to-lcov: coverage.lcov
+  Release:
+    on:
+    push:
+      tags:
+      - 'v*' # Push events to matching v*, i.e. v1.0, v20.15.10
+    runs-on: ubuntu-latest
+    needs: [Linting, Testing]
+    steps:
+      - name : install dependancies
+        run: sudo apt-get install ocl-icd-opencl-dev
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: 1.15.x
+      - uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+
+      - name: Build
+        run: |
+          make build
+
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: TellorMiner # TODO instead of hard coding the name try to grab it from the build output. tried with `go build -a -v |   basename -a` but didn't work. 
+          asset_name: TellorMiner
+          asset_content_type: application/octet-stream
