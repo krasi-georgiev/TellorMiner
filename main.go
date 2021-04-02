@@ -38,9 +38,9 @@ func (self *ProfitChecker) monitorReward() {
 	events := make(chan *tellor.ITellorNonceSubmitted)
 
 	for {
-		sub, err = self.transferSub(events)
+		sub, err = self.Sub(events)
 		if err != nil {
-			log.Print("msg", "initial subscribing to Transferred events failed")
+			log.Print("msg", "initial subscribing to  events failed")
 			<-ticker.C
 			continue
 		}
@@ -53,28 +53,28 @@ func (self *ProfitChecker) monitorReward() {
 			if err != nil {
 				log.Print(
 					"msg",
-					"Transferred subscription error",
+					" subscription error",
 					"err", err)
 			}
 
 			// Trying to resubscribe until it succeeds.
 			for {
-				sub, err = self.transferSub(events)
+				sub, err = self.Sub(events)
 				if err != nil {
-					log.Print("msg", "re-subscribing to Transferred events failed")
+					log.Print("msg", "re-subscribing to  events failed")
 					<-ticker.C
 					continue
 				}
 				break
 			}
-			log.Print("msg", "re-subscribed to Transferred events")
+			log.Print("msg", "re-subscribed to  events")
 		case event := <-events:
 			fmt.Println("vLog tranfer", event)
 		}
 	}
 }
 
-func (self *ProfitChecker) transferSub(output chan *tellor.ITellorNonceSubmitted) (event.Subscription, error) {
+func (self *ProfitChecker) Sub(output chan *tellor.ITellorNonceSubmitted) (event.Subscription, error) {
 	var tellorFilterer *tellor.ITellorFilterer
 	tellorFilterer, err := tellor.NewITellorFilterer(common.HexToAddress("0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0"), self.client)
 	if err != nil {
@@ -87,7 +87,7 @@ func (self *ProfitChecker) transferSub(output chan *tellor.ITellorNonceSubmitted
 		nil,
 	)
 	if err != nil {
-		return nil, errors.Wrap(err, "getting Transferred channel")
+		return nil, errors.Wrap(err, "getting  channel")
 	}
 	return sub, nil
 }
