@@ -501,8 +501,6 @@ func (d dataserverCmd) Run() error {
 
 	}
 
-	// Stopping the dataserver.
-	defer ds.Stop()
 	if err := g.Run(); err != nil {
 		level.Info(logger).Log("msg", "main exited with error", "err", err)
 		return err
@@ -531,11 +529,6 @@ func (m mineCmd) Run() error {
 	client, contract, accounts, err := createTellorVariables(ctx, logger, cfg)
 	if err != nil {
 		return errors.Wrapf(err, "creating tellor variables")
-	}
-
-	var accountAddrs []common.Address
-	for _, acc := range accounts {
-		accountAddrs = append(accountAddrs, acc.Address)
 	}
 
 	// DataServer is the Telliot data server.
@@ -602,6 +595,10 @@ func (m mineCmd) Run() error {
 		// Miner components.
 		{
 			// Run the profit tracker.
+			var accountAddrs []common.Address
+			for _, acc := range accounts {
+				accountAddrs = append(accountAddrs, acc.Address)
+			}
 			profitTracker, err := profit.NewProfitTracker(logger, ctx, cfg, client, contract, proxy, accountAddrs)
 			if err != nil {
 				return errors.Wrapf(err, "creating profit checker")
@@ -615,7 +612,7 @@ func (m mineCmd) Run() error {
 			})
 
 			// Create a tasker intance.
-			tasker, taskerChs, err := tasker.NewTasker(ctx, logger, cfg, proxy, client, contract, accounts)
+			tasker, taskerChs, err := tasker.NewTasker(ctx, logger, cfg, client, contract, accounts)
 			if err != nil {
 				return errors.Wrapf(err, "creating tasker")
 			}
@@ -635,7 +632,7 @@ func (m mineCmd) Run() error {
 					return errors.Wrapf(err, "creating transactor")
 				}
 				// Get a channel on which it listens for new data to submit.
-				submitter, submitterCh, err := submitter.NewSubmitter(ctx, cfg, logger, client, contract, account, proxy, transactor, profitTracker)
+				submitter, submitterCh, err := submitter.NewSubmitter(ctx, cfg, logger, client, contract, account, proxy, transactor)
 				if err != nil {
 					return errors.Wrapf(err, "creating submitter")
 				}
