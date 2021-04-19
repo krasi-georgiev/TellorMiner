@@ -105,6 +105,7 @@ func (self *Tasker) sendWork(challenge *tellor.ITellorNewChallenge) {
 			"difficulty", newChallenge.Difficulty,
 			"requestIDs", fmt.Sprintf("%+v", newChallenge.RequestIDs),
 		)
+		time.Sleep(30 * time.Second)
 		self.workSinks[acc.Address.String()] <- &mining.Work{Challenge: newChallenge, PublicAddr: acc.Address.String(), Start: uint64(rand.Int63()), N: math.MaxInt64}
 	}
 

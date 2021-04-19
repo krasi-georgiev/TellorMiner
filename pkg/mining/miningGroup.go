@@ -200,7 +200,7 @@ func (b *Backend) dispatchWork(parentCtx context.Context, timeOfLastNewValue *bi
 	}
 	n := nsteps * step
 	tm := time.Unix(timeOfLastNewValue.Int64(), 0)
-	anySolution, close := context.WithDeadline(parentCtx, tm.Add(15*time.Minute))
+	anySolution, close := context.WithDeadline(parentCtx, tm.Add(1*time.Second))
 	go b.doWork(anySolution, close, hash, start, n, resultCh)
 	return n
 }

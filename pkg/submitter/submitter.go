@@ -237,12 +237,12 @@ func (s *Submitter) Submit(newChallengeReplace context.Context, result *mining.R
 			default:
 			}
 
-			s.blockUntilTimeToSubmit(newChallengeReplace)
-			if err := s.canSubmit(); err != nil {
-				level.Info(s.logger).Log("msg", "can't submit and will retry later", "reason", err)
-				<-ticker.C
-				continue
-			}
+			// s.blockUntilTimeToSubmit(newChallengeReplace)
+			// if err := s.canSubmit(); err != nil {
+			// 	level.Info(s.logger).Log("msg", "can't submit and will retry later", "reason", err)
+			// 	<-ticker.C
+			// 	continue
+			// }
 			for {
 				select {
 				case <-newChallengeReplace.Done():

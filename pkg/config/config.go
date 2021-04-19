@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	TellorAddress      = "0x88dF592F8eb5D7Bd38bFeF7dEb0fBc02cf3778a0"
+	TellorAddress      = "0xCc2FEdAB24D219008588A5C91CAe44dF071d04c0"
 	LensAddressMainnet = "0x577417CFaF319a1fAD90aA135E3848D2C00e68CF"
 	LensAddressRinkeby = "0xebEF7ceB7C43850898e258be0a1ea5ffcdBc3205"
 )
