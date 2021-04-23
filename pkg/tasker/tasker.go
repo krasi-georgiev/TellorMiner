@@ -99,13 +99,14 @@ func (self *Tasker) sendWork(challenge *tellor.ITellorNewChallenge) {
 		RequestIDs: challenge.CurrentRequestId,
 	}
 	for _, acc := range self.accounts {
+		time.Sleep(30 * time.Second)
+
 		level.Info(self.logger).Log("msg", "new event",
 			"addr", acc.Address.String(),
 			"challenge", fmt.Sprintf("%x", newChallenge.Challenge),
 			"difficulty", newChallenge.Difficulty,
 			"requestIDs", fmt.Sprintf("%+v", newChallenge.RequestIDs),
 		)
-		time.Sleep(30 * time.Second)
 		self.workSinks[acc.Address.String()] <- &mining.Work{Challenge: newChallenge, PublicAddr: acc.Address.String(), Start: uint64(rand.Int63()), N: math.MaxInt64}
 	}
 

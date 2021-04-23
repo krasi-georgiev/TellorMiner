@@ -548,22 +548,22 @@ func (m mineCmd) Run() error {
 
 	}
 
-	// Not using a remote DB so need to start the trackers.
-	if cfg.Mine.RemoteDBHost == "" {
-		err = config.ValidateDataServerConfig(cfg)
-		if err != nil {
-			return errors.Wrapf(err, "validating config")
-		}
-		ds, err := dataServer.NewDataServerOps(ctx, logger, cfg, proxy, client, contract, accounts)
-		if err != nil {
-			return errors.Wrapf(err, "creating data server")
-		}
-		// Start and wait for it to be ready.
-		if err := ds.Start(); err != nil {
-			return errors.Wrap(err, "starting data server")
-		}
-		defer ds.Stop()
-	}
+	// // Not using a remote DB so need to start the trackers.
+	// if cfg.Mine.RemoteDBHost == "" {
+	// 	err = config.ValidateDataServerConfig(cfg)
+	// 	if err != nil {
+	// 		return errors.Wrapf(err, "validating config")
+	// 	}
+	// 	ds, err := dataServer.NewDataServerOps(ctx, logger, cfg, proxy, client, contract, accounts)
+	// 	if err != nil {
+	// 		return errors.Wrapf(err, "creating data server")
+	// 	}
+	// 	// Start and wait for it to be ready.
+	// 	if err := ds.Start(); err != nil {
+	// 		return errors.Wrap(err, "starting data server")
+	// 	}
+	// 	defer ds.Stop()
+	// }
 
 	// We define our run groups here.
 	var g run.Group
